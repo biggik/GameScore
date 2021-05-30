@@ -53,7 +53,7 @@
             <RowDefinition Height="100" />
             <RowDefinition Height="150" />
             <RowDefinition Height="30" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="150" />
             <RowDefinition Height="60" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -85,7 +85,8 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding HomeBonus}" Value="True">
                             <Setter Property="FontSize" Value="24"/>
-                            <Setter Property="Background" Value="Yellow"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="Red"/>
                             <Setter Property="FontWeight" Value="Bold" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -104,7 +105,8 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding GuestBonus}" Value="True">
                             <Setter Property="FontSize" Value="24"/>
-                            <Setter Property="Background" Value="Yellow"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="Red"/>
                             <Setter Property="FontWeight" Value="Bold" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -112,10 +114,15 @@
             </Button.Style>
         </Button>
 
-        <StackPanel Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="6" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Settings" FontSize="24" Margin="5 0 5 0" Padding="10 0 10 0" 
+        <TextBlock Grid.Row="5" Grid.Column="1" Text="Period" Style="{StaticResource Team}"/>
+        <Button Grid.Row="5" Grid.Column="3" Style="{StaticResource UpOrDown}" Content="-" Click="GamePeriodDown" />
+        <TextBlock Grid.Row="5" Grid.Column="5" Style="{StaticResource GameClock}" Text="{Binding GamePeriod}" />
+        <Button Grid.Row="5" Grid.Column="7" Style="{StaticResource UpOrDown}" Content="+" Click="GamePeriodUp" />
+
+        <StackPanel Grid.Row="5" Grid.Column="9" Grid.ColumnSpan="2" Orientation="Vertical" HorizontalAlignment="Right">
+            <Button Content="Settings" FontSize="24" Margin="0 5 0 5" Padding="10 10 10 10" 
                 Background="Transparent" Click="Settings" />
-            <Button Content="Score => 0" FontSize="24" Margin="5 0 5 0" Padding="10 0 10 0" 
+            <Button Content="Score => 0" FontSize="24" Margin="0 5 0 5" Padding="10 10 10 10" 
                 Background="Transparent" Click="Reset" />
         </StackPanel>
     </Grid>

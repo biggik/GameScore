@@ -38,6 +38,15 @@ namespace GameScore
             GameClockSettings.Instance.UpdateGuestScore(int.Parse((sender as Button).Content.ToString()));
         }
 
+        private void GamePeriodDown(object sender, RoutedEventArgs e)
+        {
+            GameClockSettings.Instance.UpdateGamePeriod(-1);
+        }
+        private void GamePeriodUp(object sender, RoutedEventArgs e)
+        {
+            GameClockSettings.Instance.UpdateGamePeriod(+1);
+        }
+
         private void GuestTeamBonus(object sender, RoutedEventArgs e)
         {
             GameClockSettings.Instance.UpdateGuestBonus(!GameClockSettings.Instance.GuestBonus);
@@ -58,6 +67,8 @@ namespace GameScore
 
             GameClockSettings.Instance.UpdateHomeBonus(false);
             GameClockSettings.Instance.UpdateGuestBonus(false);
+
+            GameClockSettings.Instance.UpdateGamePeriod(-100);
         }
     }
 }

@@ -27,6 +27,13 @@ namespace GameScore.Settings
             GuestScore = AsInt(FromFile(nameof(GuestScore)));
             GuestBonus = AsBool(FromFile(nameof(GuestBonus)));
 
+            GamePeriod = FromFile(nameof(GamePeriod));
+            if (string.IsNullOrWhiteSpace(GamePeriod))
+            {
+                GamePeriod = "1";
+            }
+            GamePeriodText = FromFile(nameof(GamePeriodText));
+
             var textsFile = Path.Combine(FileLocations, "texts.json");
             if (File.Exists(textsFile))
             {
@@ -38,17 +45,75 @@ namespace GameScore.Settings
                 {
                     Texts = new LocalizedTexts();
                 }
+
+                Localize();
             }
             else
             {
                 Texts = new LocalizedTexts();
-                var ci = System.Threading.Thread.CurrentThread.CurrentCulture;
-                if (ci.Name == "is-IS")
-                {
-                    Texts.Bonus = "Bónus";
-                }
-                File.WriteAllText(textsFile, JsonSerializer.Serialize<LocalizedTexts>(Texts, new JsonSerializerOptions { WriteIndented = true }));
+                Localize();
             }
+         
+            File.WriteAllText(textsFile, JsonSerializer.Serialize(Texts, new JsonSerializerOptions { WriteIndented = true }));
+        }
+
+        private void Localize()
+        {
+            string WithDefault(string current, string defaultValue)
+            {
+                return string.IsNullOrWhiteSpace(current) ? defaultValue : current;
+            }
+
+            var ci = System.Threading.Thread.CurrentThread.CurrentCulture;
+            if (ci.Name == "is-IS")
+            {
+                Texts.Bonus = WithDefault(Texts.Bonus, "Bónus");
+                Texts.Overtime = WithDefault(Texts.Overtime, "Frl.");
+                Texts.PeriodText = WithDefault(Texts.PeriodText, "Lh {0}");
+            }
+            else
+            {
+                Texts.Bonus = WithDefault(Texts.Bonus, "Bonus");
+                Texts.Overtime = WithDefault(Texts.Overtime, "OT");
+                Texts.PeriodText = WithDefault(Texts.PeriodText, "P{0}");
+            }
+        }
+        internal void UpdateGamePeriod(int delta)
+        {
+            if (!int.TryParse(GamePeriod, out int current))
+            {
+                if (GamePeriod == Texts.Overtime)
+                {
+                    current = 5;
+                }
+                else
+                {
+                    current = 1;
+                }
+                current += delta;
+            }
+            else
+            {
+                current += delta;
+            }
+
+            current = Math.Min(5, Math.Max(current, 1));
+
+            GamePeriod = current == 1 ? "1"
+                       : current == 2 ? "2"
+                       : current == 3 ? "3"
+                       : current == 4 ? "4"
+                       : Texts.Overtime;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GamePeriod)));
+            File.WriteAllText(Path.Combine(FileLocations, nameof(GamePeriod) + ".txt"), GamePeriod);
+
+            try
+            {
+                GamePeriodText = current < 5 ? string.Format(Texts.PeriodText, GamePeriod) : GamePeriod;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GamePeriodText)));
+                File.WriteAllText(Path.Combine(FileLocations, nameof(GamePeriodText) + ".txt"), GamePeriodText);
+            }
+            catch { }
         }
 
         public LocalizedTexts Texts { get; set; }
@@ -78,6 +143,9 @@ namespace GameScore.Settings
         public string GuestTeam { get; set; }
         public int GuestScore { get; set; }
         public bool GuestBonus { get; set; }
+
+        public string GamePeriod { get; set; }
+        public string GamePeriodText { get; set; }
 
         public static GameClockSettings Instance => _instance.Value;
 
