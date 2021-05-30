@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameScore"
         mc:Ignorable="d"
-        Title="Game Score" Height="450" Width="800" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+        Title="Game Score" Height="450" Width="1200" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <ResourceDictionary>
             <Style x:Key="Team" TargetType="TextBlock">
@@ -33,6 +33,17 @@
                 <Setter Property="Width" Value="120" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
+            <Style x:Key="Bonus" TargetType="Button">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontWeight" Value="Regular" />
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="DarkGray"/>
+                <Setter Property="BorderBrush" Value="DarkGray"/>
+                <Setter Property="Padding" Value="5 -20 0 -20" />
+                <Setter Property="Width" Value="120" />
+                <Setter Property="Height" Value="70" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -56,7 +67,8 @@
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding HomeTeam}" Style="{StaticResource Team}"/>
@@ -67,12 +79,38 @@
         <Button Grid.Row="1" Grid.Column="7" Style="{StaticResource UpOrDown}" Content="1" Click="HomeTeamUp" />
         <Button Grid.Row="1" Grid.Column="8" Style="{StaticResource UpOrDown}" Content="2" Click="HomeTeamUp" />
         <Button Grid.Row="1" Grid.Column="9" Style="{StaticResource UpOrDown}" Content="3" Click="HomeTeamUp" />
+        <Button Grid.Row="1" Grid.Column="10" Content="{Binding Texts.Bonus}" Click="HomeTeamBonus">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource Bonus}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HomeBonus}" Value="True">
+                            <Setter Property="FontSize" Value="24"/>
+                            <Setter Property="Background" Value="Yellow"/>
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
 
         <Button Grid.Row="3" Grid.Column="3" Style="{StaticResource UpOrDown}" Content="-" Click="GuestTeamDown" />
         <TextBlock Grid.Row="3" Grid.Column="5" Style="{StaticResource GameClock}" Text="{Binding GuestScore}" />
         <Button Grid.Row="3" Grid.Column="7" Style="{StaticResource UpOrDown}" Content="1" Click="GuestTeamUp" />
         <Button Grid.Row="3" Grid.Column="8" Style="{StaticResource UpOrDown}" Content="2" Click="GuestTeamUp" />
         <Button Grid.Row="3" Grid.Column="9" Style="{StaticResource UpOrDown}" Content="3" Click="GuestTeamUp" />
+        <Button Grid.Row="3" Grid.Column="10" Content="{Binding Texts.Bonus}" Click="GuestTeamBonus">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource Bonus}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding GuestBonus}" Value="True">
+                            <Setter Property="FontSize" Value="24"/>
+                            <Setter Property="Background" Value="Yellow"/>
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
 
         <StackPanel Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="6" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Settings" FontSize="24" Margin="5 0 5 0" Padding="10 0 10 0" 

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace GameScore.Settings
 {
@@ -17,19 +14,47 @@ namespace GameScore.Settings
         private GameClockSettings()
         {
             FileLocations = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "GameClock");
+            Directory.CreateDirectory(FileLocations);
 
             GameName = FromFile(nameof(GameName), "Can be modified in Settings");
             GameDescription = FromFile(nameof(GameDescription));
+
             HomeTeam = FromFile(nameof(HomeTeam), "Home");
-            GuestTeam = FromFile(nameof(GuestTeam), "Guest");
             HomeScore = AsInt(FromFile(nameof(HomeScore)));
+            HomeBonus = AsBool(FromFile(nameof(HomeBonus)));
+
+            GuestTeam = FromFile(nameof(GuestTeam), "Guest");
             GuestScore = AsInt(FromFile(nameof(GuestScore)));
+            GuestBonus = AsBool(FromFile(nameof(GuestBonus)));
+
+            var textsFile = Path.Combine(FileLocations, "texts.json");
+            if (File.Exists(textsFile))
+            {
+                try
+                {
+                    Texts = JsonSerializer.Deserialize<LocalizedTexts>(File.ReadAllText(textsFile));
+                }
+                catch
+                {
+                    Texts = new LocalizedTexts();
+                }
+            }
+            else
+            {
+                Texts = new LocalizedTexts();
+                var ci = System.Threading.Thread.CurrentThread.CurrentCulture;
+                if (ci.Name == "is-IS")
+                {
+                    Texts.Bonus = "Bónus";
+                }
+                File.WriteAllText(textsFile, JsonSerializer.Serialize<LocalizedTexts>(Texts, new JsonSerializerOptions { WriteIndented = true }));
+            }
         }
 
-        private int AsInt(string value)
-        {
-            return int.TryParse(value, out int i) ? i : 0;
-        }
+        public LocalizedTexts Texts { get; set; }
+
+        private int AsInt(string value) => int.TryParse(value, out int i) ? i : 0;
+        private bool AsBool(string value) => bool.TryParse(value, out bool i) ? i : false;
 
         private string FromFile(string filePart, string defaultValue = "")
         {
@@ -42,13 +67,17 @@ namespace GameScore.Settings
         }
 
 
+        public string FileLocations { get; set; }
         public string GameName { get; set; }
         public string GameDescription { get; set; }
+        
         public string HomeTeam { get; set; }
-        public string GuestTeam { get; set; }
-        public string FileLocations { get; set; }
         public int HomeScore { get; set; }
+        public bool HomeBonus { get; set; }
+        
+        public string GuestTeam { get; set; }
         public int GuestScore { get; set; }
+        public bool GuestBonus { get; set; }
 
         public static GameClockSettings Instance => _instance.Value;
 
@@ -65,7 +94,6 @@ namespace GameScore.Settings
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GameDescription)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HomeTeam)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GuestTeam)));
-
         }
 
         public void UpdateHomeScore(int delta)
@@ -81,6 +109,18 @@ namespace GameScore.Settings
             if (GuestScore < 0) GuestScore = 0;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GuestScore)));
             File.WriteAllText(Path.Combine(FileLocations, nameof(GuestScore) + ".txt"), GuestScore.ToString());
+        }
+        public void UpdateHomeBonus(bool isBonus)
+        {
+            HomeBonus = isBonus;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HomeBonus)));
+            File.WriteAllText(Path.Combine(FileLocations, nameof(HomeBonus) + ".txt"), HomeBonus ? Texts.Bonus : "");
+        }
+        public void UpdateGuestBonus(bool isBonus)
+        {
+            GuestBonus = isBonus;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GuestBonus)));
+            File.WriteAllText(Path.Combine(FileLocations, nameof(GuestBonus) + ".txt"), GuestBonus ? Texts.Bonus : "");
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using GameScore.Settings;
 
@@ -25,6 +23,11 @@ namespace GameScore
             GameClockSettings.Instance.UpdateHomeScore(int.Parse((sender as Button).Content.ToString()));
         }
 
+        private void HomeTeamBonus(object sender, RoutedEventArgs e)
+        {
+            GameClockSettings.Instance.UpdateHomeBonus(!GameClockSettings.Instance.HomeBonus);
+        }
+
         private void GuestTeamDown(object sender, RoutedEventArgs e)
         {
             GameClockSettings.Instance.UpdateGuestScore(-1);
@@ -33,6 +36,11 @@ namespace GameScore
         private void GuestTeamUp(object sender, RoutedEventArgs e)
         {
             GameClockSettings.Instance.UpdateGuestScore(int.Parse((sender as Button).Content.ToString()));
+        }
+
+        private void GuestTeamBonus(object sender, RoutedEventArgs e)
+        {
+            GameClockSettings.Instance.UpdateGuestBonus(!GameClockSettings.Instance.GuestBonus);
         }
 
         private void Settings(object sender, RoutedEventArgs e)
@@ -47,6 +55,9 @@ namespace GameScore
             GameClockSettings.Instance.UpdateHomeScore(0);
             GameClockSettings.Instance.GuestScore = 0;
             GameClockSettings.Instance.UpdateGuestScore(0);
+
+            GameClockSettings.Instance.UpdateHomeBonus(false);
+            GameClockSettings.Instance.UpdateGuestBonus(false);
         }
     }
 }
