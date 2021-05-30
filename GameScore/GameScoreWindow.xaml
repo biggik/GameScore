@@ -1,0 +1,84 @@
+﻿<Window x:Class="GameScore.GameScoreWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GameScore"
+        mc:Ignorable="d"
+        Title="Game Score" Height="450" Width="800" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Team" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="62" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="TextWrapping" Value="WrapWithOverflow" />
+            </Style>
+            <Style x:Key="GameClock" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="./Fonts/#Digital-7 Mono" />
+                <Setter Property="FontSize" Value="88" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Background" Value="Black" />
+                <Setter Property="Foreground" Value="LightGreen" />
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="Width" Value="250" />
+                <Setter Property="Padding" Value="30 30 30 30" />
+            </Style>
+            <Style x:Key="UpOrDown" TargetType="Button">
+                <Setter Property="FontSize" Value="88" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="Padding" Value="0 -20 0 0" />
+                <Setter Property="Width" Value="120" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="150" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="150" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding HomeTeam}" Style="{StaticResource Team}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GuestTeam}" Style="{StaticResource Team}"/>
+
+        <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource UpOrDown}" Content="-" Click="HomeTeamDown" />
+        <TextBlock Grid.Row="1" Grid.Column="5" Style="{StaticResource GameClock}" Text="{Binding HomeScore}" />
+        <Button Grid.Row="1" Grid.Column="7" Style="{StaticResource UpOrDown}" Content="1" Click="HomeTeamUp" />
+        <Button Grid.Row="1" Grid.Column="8" Style="{StaticResource UpOrDown}" Content="2" Click="HomeTeamUp" />
+        <Button Grid.Row="1" Grid.Column="9" Style="{StaticResource UpOrDown}" Content="3" Click="HomeTeamUp" />
+
+        <Button Grid.Row="3" Grid.Column="3" Style="{StaticResource UpOrDown}" Content="-" Click="GuestTeamDown" />
+        <TextBlock Grid.Row="3" Grid.Column="5" Style="{StaticResource GameClock}" Text="{Binding GuestScore}" />
+        <Button Grid.Row="3" Grid.Column="7" Style="{StaticResource UpOrDown}" Content="1" Click="GuestTeamUp" />
+        <Button Grid.Row="3" Grid.Column="8" Style="{StaticResource UpOrDown}" Content="2" Click="GuestTeamUp" />
+        <Button Grid.Row="3" Grid.Column="9" Style="{StaticResource UpOrDown}" Content="3" Click="GuestTeamUp" />
+
+        <StackPanel Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="6" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Settings" FontSize="24" Margin="5 0 5 0" Padding="10 0 10 0" 
+                Background="Transparent" Click="Settings" />
+            <Button Content="Score => 0" FontSize="24" Margin="5 0 5 0" Padding="10 0 10 0" 
+                Background="Transparent" Click="Reset" />
+        </StackPanel>
+    </Grid>
+</Window>

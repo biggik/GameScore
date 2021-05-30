@@ -1,0 +1,7 @@
+﻿[Bb]in/
+[Oo]bj/
+.vs/
+*.suo
+*.sln.cache
+*.user
+packages
