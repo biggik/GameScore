@@ -40,16 +40,16 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="1" Text="Game name" Style="{StaticResource Label}"/>
-        <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding GameName}"  Style="{StaticResource Value}"/>
+        <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Value}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="1" Text="Game description" Style="{StaticResource Label}"/>
-        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding GameDescription}"  Style="{StaticResource Value}"/>
+        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding GameDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Value}"/>
 
         <TextBlock Grid.Row="2" Grid.Column="1" Text="Home team" Style="{StaticResource Label}"/>
-        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding HomeTeam}"  Style="{StaticResource Value}"/>
+        <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding HomeTeam, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Value}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="1" Text="Guest team" Style="{StaticResource Label}"/>
-        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding GuestTeam}"  Style="{StaticResource Value}"/>
+        <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding GuestTeam, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource Value}"/>
 
         <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Save" FontSize="24" Margin="5 0 5 0" Padding="10 0 10 0" 

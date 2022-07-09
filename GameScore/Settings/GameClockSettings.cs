@@ -27,6 +27,8 @@ namespace GameScore.Settings
             GuestScore = AsInt(FromFile(nameof(GuestScore)));
             GuestBonus = AsBool(FromFile(nameof(GuestBonus)));
 
+            Period = int.TryParse(FromFile(nameof(GamePeriod)), out int p) ? p : 1;
+
             GamePeriod = FromFile(nameof(GamePeriod));
             if (string.IsNullOrWhiteSpace(GamePeriod))
             {
@@ -68,48 +70,32 @@ namespace GameScore.Settings
             if (ci.Name == "is-IS")
             {
                 Texts.Bonus = WithDefault(Texts.Bonus, "Bónus");
-                Texts.Overtime = WithDefault(Texts.Overtime, "Frl.");
+                Texts.Overtime = WithDefault(Texts.Overtime, "Fl {0}");
                 Texts.PeriodText = WithDefault(Texts.PeriodText, "Lh {0}");
             }
             else
             {
                 Texts.Bonus = WithDefault(Texts.Bonus, "Bonus");
-                Texts.Overtime = WithDefault(Texts.Overtime, "OT");
+                Texts.Overtime = WithDefault(Texts.Overtime, "OT {0}");
                 Texts.PeriodText = WithDefault(Texts.PeriodText, "P{0}");
             }
         }
         internal void UpdateGamePeriod(int delta)
         {
-            if (!int.TryParse(GamePeriod, out int current))
-            {
-                if (GamePeriod == Texts.Overtime)
-                {
-                    current = 5;
-                }
-                else
-                {
-                    current = 1;
-                }
-                current += delta;
-            }
-            else
-            {
-                current += delta;
-            }
+            Period += delta;
+            if (Period < 1)
+                Period = 1;
 
-            current = Math.Min(5, Math.Max(current, 1));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Period)));
+            File.WriteAllText(Path.Combine(FileLocations, nameof(Period) + ".txt"), Period.ToString());
 
-            GamePeriod = current == 1 ? "1"
-                       : current == 2 ? "2"
-                       : current == 3 ? "3"
-                       : current == 4 ? "4"
-                       : Texts.Overtime;
+            GamePeriod = Period <= 4 ? Period.ToString() : string.Format(Texts.Overtime, Period - 4);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GamePeriod)));
             File.WriteAllText(Path.Combine(FileLocations, nameof(GamePeriod) + ".txt"), GamePeriod);
 
             try
             {
-                GamePeriodText = current < 5 ? string.Format(Texts.PeriodText, GamePeriod) : GamePeriod;
+                GamePeriodText = Period < 5 ? string.Format(Texts.PeriodText, GamePeriod) : string.Format(Texts.Overtime, Period - 4);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GamePeriodText)));
                 File.WriteAllText(Path.Combine(FileLocations, nameof(GamePeriodText) + ".txt"), GamePeriodText);
             }
@@ -144,6 +130,7 @@ namespace GameScore.Settings
         public int GuestScore { get; set; }
         public bool GuestBonus { get; set; }
 
+        public int Period { get; set; }
         public string GamePeriod { get; set; }
         public string GamePeriodText { get; set; }
 
