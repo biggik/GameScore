@@ -7,7 +7,7 @@ namespace GameScore.Settings
 {
     public class GameClockSettings : INotifyPropertyChanged
     {
-        private static Lazy<GameClockSettings> _instance = new Lazy<GameClockSettings>(() => new GameClockSettings());
+        private static readonly Lazy<GameClockSettings> _instance = new(() => new GameClockSettings());
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -19,13 +19,13 @@ namespace GameScore.Settings
             GameName = FromFile(nameof(GameName), "Can be modified in Settings");
             GameDescription = FromFile(nameof(GameDescription));
 
-            HomeTeam = FromFile(nameof(HomeTeam), "Home");
-            HomeScore = AsInt(FromFile(nameof(HomeScore)));
-            HomeBonus = AsBool(FromFile(nameof(HomeBonus)));
+            Home.Name = FromFile("HomeTeam", "Home");
+            Home.Score = AsInt(FromFile("HomeScore"));
+            Home.Bonus = AsBool(FromFile("HomeBonus"));
 
-            GuestTeam = FromFile(nameof(GuestTeam), "Guest");
-            GuestScore = AsInt(FromFile(nameof(GuestScore)));
-            GuestBonus = AsBool(FromFile(nameof(GuestBonus)));
+            Guests.Name = FromFile("GuestTeam", "Guest");
+            Guests.Score = AsInt(FromFile("GuestScore"));
+            Guests.Bonus = AsBool(FromFile("GuestBonus"));
 
             Period = int.TryParse(FromFile(nameof(GamePeriod)), out int p) ? p : 1;
 
@@ -55,13 +55,13 @@ namespace GameScore.Settings
                 Texts = new LocalizedTexts();
                 Localize();
             }
-         
+
             File.WriteAllText(textsFile, JsonSerializer.Serialize(Texts, new JsonSerializerOptions { WriteIndented = true }));
         }
 
         private void Localize()
         {
-            string WithDefault(string current, string defaultValue)
+            static string WithDefault(string current, string defaultValue)
             {
                 return string.IsNullOrWhiteSpace(current) ? defaultValue : current;
             }
@@ -70,21 +70,26 @@ namespace GameScore.Settings
             if (ci.Name == "is-IS")
             {
                 Texts.Bonus = WithDefault(Texts.Bonus, "Bónus");
+                Texts.Fouls = WithDefault(Texts.Fouls, "Villur");
                 Texts.Overtime = WithDefault(Texts.Overtime, "Fl {0}");
                 Texts.PeriodText = WithDefault(Texts.PeriodText, "Lh {0}");
             }
             else
             {
                 Texts.Bonus = WithDefault(Texts.Bonus, "Bonus");
+                Texts.Fouls = WithDefault(Texts.Fouls, "Fouls");
                 Texts.Overtime = WithDefault(Texts.Overtime, "OT {0}");
                 Texts.PeriodText = WithDefault(Texts.PeriodText, "P{0}");
             }
         }
+
         internal void UpdateGamePeriod(int delta)
         {
             Period += delta;
             if (Period < 1)
+            {
                 Period = 1;
+            }
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Period)));
             File.WriteAllText(Path.Combine(FileLocations, nameof(Period) + ".txt"), Period.ToString());
@@ -104,8 +109,8 @@ namespace GameScore.Settings
 
         public LocalizedTexts Texts { get; set; }
 
-        private int AsInt(string value) => int.TryParse(value, out int i) ? i : 0;
-        private bool AsBool(string value) => bool.TryParse(value, out bool i) ? i : false;
+        private static int AsInt(string value) => int.TryParse(value, out int i) ? i : 0;
+        private static bool AsBool(string value) => bool.TryParse(value, out bool i) && i;
 
         private string FromFile(string filePart, string defaultValue = "")
         {
@@ -117,18 +122,13 @@ namespace GameScore.Settings
             return defaultValue;
         }
 
-
         public string FileLocations { get; set; }
         public string GameName { get; set; }
         public string GameDescription { get; set; }
-        
-        public string HomeTeam { get; set; }
-        public int HomeScore { get; set; }
-        public bool HomeBonus { get; set; }
-        
-        public string GuestTeam { get; set; }
-        public int GuestScore { get; set; }
-        public bool GuestBonus { get; set; }
+
+        public Team Home {get; set; } = new Team();
+
+        public Team Guests { get; set; } = new Team();
 
         public int Period { get; set; }
         public string GamePeriod { get; set; }
@@ -142,40 +142,11 @@ namespace GameScore.Settings
 
             File.WriteAllText(Path.Combine(FileLocations, nameof(GameName) + ".txt"), GameName);
             File.WriteAllText(Path.Combine(FileLocations, nameof(GameDescription) + ".txt"), GameDescription);
-            File.WriteAllText(Path.Combine(FileLocations, nameof(HomeTeam) + ".txt"), HomeTeam);
-            File.WriteAllText(Path.Combine(FileLocations, nameof(GuestTeam) + ".txt"), GuestTeam);
+            File.WriteAllText(Path.Combine(FileLocations, "HomeTeam.txt"), Home.Name);
+            File.WriteAllText(Path.Combine(FileLocations, "GuestTeam.txt"), Guests.Name);
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GameName)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GameDescription)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HomeTeam)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GuestTeam)));
-        }
-
-        public void UpdateHomeScore(int delta)
-        {
-            HomeScore += delta;
-            if (HomeScore < 0) HomeScore = 0;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HomeScore)));
-            File.WriteAllText(Path.Combine(FileLocations, nameof(HomeScore) + ".txt"), HomeScore.ToString());
-        }
-        public void UpdateGuestScore(int delta)
-        {
-            GuestScore += delta;
-            if (GuestScore < 0) GuestScore = 0;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GuestScore)));
-            File.WriteAllText(Path.Combine(FileLocations, nameof(GuestScore) + ".txt"), GuestScore.ToString());
-        }
-        public void UpdateHomeBonus(bool isBonus)
-        {
-            HomeBonus = isBonus;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HomeBonus)));
-            File.WriteAllText(Path.Combine(FileLocations, nameof(HomeBonus) + ".txt"), HomeBonus ? Texts.Bonus : "");
-        }
-        public void UpdateGuestBonus(bool isBonus)
-        {
-            GuestBonus = isBonus;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GuestBonus)));
-            File.WriteAllText(Path.Combine(FileLocations, nameof(GuestBonus) + ".txt"), GuestBonus ? Texts.Bonus : "");
         }
     }
 }
