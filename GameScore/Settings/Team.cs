@@ -8,6 +8,7 @@ namespace GameScore.Settings
         private string name;
         private int score;
         private bool bonus;
+        private string scoreText;
 
         public string Name
         {
@@ -25,14 +26,26 @@ namespace GameScore.Settings
             {
                 score = value;
                 InvokePropertyChanged(nameof(Score));
+                ScoreText = score.ToString();
             }
         }
+
+        public string ScoreText
+        {
+            get => scoreText;
+            set
+            { 
+                scoreText = value; 
+                InvokePropertyChanged(nameof(ScoreText));
+            }
+        }
+
         public bool Bonus
         {
             get => bonus;
-            set 
-            { 
-                bonus = value; 
+            set
+            {
+                bonus = value;
                 InvokePropertyChanged(nameof(Bonus));
             }
         }
