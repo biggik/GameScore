@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using GameScore.Settings;
 
 namespace GameScore
@@ -22,6 +23,11 @@ namespace GameScore
         private void Cancel(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void GoToFileLocation(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start("Explorer.exe", GameClockSettings.Instance.FileLocations);
         }
     }
 }

@@ -24,15 +24,15 @@ namespace GameScore
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += OnTimerElapsed;
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(2500);
-            dispatcherTimer.Start();
         }
 
         private void OnTimerElapsed(object sender, EventArgs e)
         {
-            if (_deltas.TryTake(out int delta))
+            while (_deltas.TryTake(out int delta))
             {
                 UpdateScore(delta, false);
             }
+            dispatcherTimer.Stop();
         }
 
         public string Id { get; set; }
@@ -45,8 +45,12 @@ namespace GameScore
             {
                 Current.ScoreText = delta > 0 ? $"+{delta}" : $"-{delta}";
                 File.WriteAllText(Path.Combine(GameClockSettings.Instance.FileLocations, $"{Id}{nameof(Team.Score)}.txt"), Current.ScoreText);
-                
+
                 _deltas.TryAdd(delta);
+                if (!dispatcherTimer.IsEnabled)
+                {
+                    dispatcherTimer.Start();
+                }
             }
             else
             {
