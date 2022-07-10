@@ -8,6 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="1200">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="30"/>
@@ -23,12 +24,13 @@
             <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Name}" Style="{StaticResource Team}"/>
-        <Button Grid.Row="0" Grid.Column="3" Style="{StaticResource UpOrDown}" Content="-" Click="ScoreDown" />
-        <TextBlock Grid.Row="0" Grid.Column="5" Style="{StaticResource GameClock}" Text="{Binding ScoreText}" />
-        <Button Grid.Row="0" Grid.Column="7" Style="{StaticResource UpOrDown}" Content="1" Click="ScoreUp" Width="100" />
-        <Button Grid.Row="0" Grid.Column="8" Style="{StaticResource UpOrDown}" Content="2" Click="ScoreUp" />
-        <Button Grid.Row="0" Grid.Column="9" Style="{StaticResource UpOrDown}" Content="3" Click="ScoreUp" />
-        <local:PlusMinusButton Grid.Row="0" Grid.Column="10" Style="{StaticResource Bonusb}" DataContext="{Binding}"/>
+        <Image Grid.Column="0" Source="{Binding Image}" Width="100"/>
+        <TextBlock Grid.Column="2" Text="{Binding Name}" Style="{StaticResource Team}"/>
+        <Button Grid.Column="4" Style="{StaticResource UpOrDown}" Content="-" Click="ScoreDown" />
+        <TextBlock Grid.Column="6" Style="{StaticResource GameClock}" Text="{Binding ScoreText}" />
+        <Button Grid.Column="8" Style="{StaticResource UpOrDown}" Content="1" Click="ScoreUp" Width="100" />
+        <Button Grid.Column="9" Style="{StaticResource UpOrDown}" Content="2" Click="ScoreUp" />
+        <Button Grid.Column="10" Style="{StaticResource UpOrDown}" Content="3" Click="ScoreUp" />
+        <local:PlusMinusButton Grid.Column="11" Style="{StaticResource Bonusb}" DataContext="{Binding}"/>
     </Grid>
 </UserControl>

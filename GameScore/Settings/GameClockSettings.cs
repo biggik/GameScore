@@ -91,20 +91,23 @@ namespace GameScore.Settings
                 Period = 1;
             }
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Period)));
+            InvokePropertyChanged(nameof(Period));
             File.WriteAllText(Path.Combine(FileLocations, nameof(Period) + ".txt"), Period.ToString());
 
             GamePeriod = Period <= 4 ? Period.ToString() : string.Format(Texts.Overtime, Period - 4);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GamePeriod)));
+            InvokePropertyChanged(nameof(GamePeriod));
             File.WriteAllText(Path.Combine(FileLocations, nameof(GamePeriod) + ".txt"), GamePeriod);
 
             try
             {
                 GamePeriodText = Period < 5 ? string.Format(Texts.PeriodText, GamePeriod) : string.Format(Texts.Overtime, Period - 4);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GamePeriodText)));
+                InvokePropertyChanged(nameof(GamePeriodText));
                 File.WriteAllText(Path.Combine(FileLocations, nameof(GamePeriodText) + ".txt"), GamePeriodText);
             }
             catch { }
+
+            Home.UpdateFouls();
+            Guests.UpdateFouls();
         }
 
         public LocalizedTexts Texts { get; set; }
@@ -145,8 +148,13 @@ namespace GameScore.Settings
             File.WriteAllText(Path.Combine(FileLocations, "HomeTeam.txt"), Home.Name);
             File.WriteAllText(Path.Combine(FileLocations, "GuestTeam.txt"), Guests.Name);
 
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GameName)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GameDescription)));
+            InvokePropertyChanged(nameof(GameName));
+            InvokePropertyChanged(nameof(GameDescription));
+        }
+
+        private void InvokePropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameScore"
         mc:Ignorable="d"
-        Title="Game Score" Height="450" Width="1200" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+        Title="Game Score" Height="450" Width="1300" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
@@ -17,6 +17,7 @@
             <RowDefinition Height="60" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="30"/>
@@ -37,12 +38,12 @@
         <local:TeamInfo Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="12"
                         DataContext="{Binding Guests}" Id="Guest"/>
 
-        <TextBlock Grid.Row="5" Grid.Column="1" Text="Period" Style="{StaticResource Team}"/>
-        <Button Grid.Row="5" Grid.Column="3" Style="{StaticResource UpOrDown}" Content="-" Click="GamePeriodDown" />
-        <TextBlock Grid.Row="5" Grid.Column="5" Style="{StaticResource GameClock}" Text="{Binding GamePeriod}" />
-        <Button Grid.Row="5" Grid.Column="7" Style="{StaticResource UpOrDown}" Content="+" Click="GamePeriodUp" />
+        <TextBlock Grid.Row="5" Grid.Column="2" Text="Period" Style="{StaticResource Team}"/>
+        <Button Grid.Row="5" Grid.Column="4" Style="{StaticResource UpOrDown}" Content="-" Click="GamePeriodDown" />
+        <TextBlock Grid.Row="5" Grid.Column="6" Style="{StaticResource Period}" Text="{Binding GamePeriod}" />
+        <Button Grid.Row="5" Grid.Column="8" Style="{StaticResource UpOrDown}" Content="+" Click="GamePeriodUp" />
 
-        <StackPanel Grid.Row="5" Grid.Column="9" Grid.ColumnSpan="2" Orientation="Vertical" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="5" Grid.Column="10" Grid.ColumnSpan="2" Orientation="Vertical" HorizontalAlignment="Right">
             <Button Content="Settings" FontSize="24" Margin="0 5 0 5" Padding="10 10 10 10" 
                 Background="Transparent" Click="Settings" />
             <Button Content="Score => 0" FontSize="24" Margin="0 5 0 5" Padding="10 10 10 10" 

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -14,8 +13,8 @@ namespace GameScore
     /// </summary>
     public partial class TeamInfo : UserControl
     {
-        private BlockingCollection<int> _deltas = new();
-        private DispatcherTimer dispatcherTimer;
+        private readonly BlockingCollection<int> _deltas = new();
+        private readonly DispatcherTimer dispatcherTimer;
 
         public TeamInfo()
         {
